@@ -8,9 +8,12 @@ import ButtonComponent from './components/ButtonComponent.vue';
 <template>
   <HeaderComponent />
   <main>
+    <div v-if="image != ''" class="w-1/4 mx-auto p-4">
+      <img v-bind:src="image">
+    </div>
     <CardComponent v-if="quote != ''" v-bind:quote="quote" />
     <div class="flex mx-auto w-1/2 justify-evenly">
-      <ButtonComponent @click="getQuote" class="mt-4" text="Gerar Quote"/>
+      <ButtonComponent @click="handleQuoteImage" class="mt-4" text="Gerar Quote"/>
       <ButtonComponent @click="translateQuote" class="mt-4" text="Traduzir"/>
     </div>
   </main>
@@ -35,6 +38,15 @@ import ButtonComponent from './components/ButtonComponent.vue';
         );
         const translatedQuote = await response.data;
         this.quote = translatedQuote[0][0][0];
+    },
+    async getDogImage() {
+    const dogImage = await axios.get('https://dog.ceo/api/breeds/image/random');
+    this.image = dogImage.data.message;
+    },
+
+    async handleQuoteImage() {
+      await this.getDogImage();
+      await this.getQuote();
     }
   },
 }
